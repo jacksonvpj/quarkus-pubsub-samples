@@ -1,12 +1,19 @@
-# demo project
+# Quakus PubSub Sample code
 
 This project uses Quarkus, the Supersonic Subatomic Java Framework.
 
 If you want to learn more about Quarkus, please visit its website: https://quarkus.io/ .
 
+Define our projectId and subscription name into the code or setting by environment variable
+
 ## Running the application in dev mode
 
 You can run your application in dev mode that enables live coding using:
+
+Setup service Account with specific IAM role to read subscription name 
+```shell script
+export GOOGLE_APPLICATION_CREDENCTIALS=<Path>/serviceAccount.json
+```
 
 ```shell script
 ./gradlew quarkusDev
