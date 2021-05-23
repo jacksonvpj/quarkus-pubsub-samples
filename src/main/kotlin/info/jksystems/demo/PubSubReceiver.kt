@@ -20,16 +20,23 @@ class PubSubReceiver(
 ) {
 
     fun init(@Observes startupEvent: StartupEvent){
-        val defaultSubscriberFactory = DefaultSubscriberFactory { "project-id" }
+        val projectId = "project-id" // TODO: replace to specific projectId
+        val subscriptionName = "subscription-name" // TODO: replace to specific subscription
+
+        val defaultSubscriberFactory = DefaultSubscriberFactory { projectId }
         val template = PubSubSubscriberTemplate(defaultSubscriberFactory)
         val pubSubReactiveFactory = PubSubReactiveFactory(template, Schedulers.fromExecutorService(vertx.nettyEventLoopGroup()))
         pubSubReactiveFactory
-            .poll ("subscription-name", 1000)
+            .poll (subscriptionName, 1000)
             .flatMap ({ msg ->
                 val pubsubMessage = msg.pubsubMessage
-                Mono.fromCallable { objectMapper.readValue( msg.pubsubMessage.data.toStringUtf8(), Map::class.java) }
-                    .doOnNext { log.info("Incoming Payload $it, messageId ${pubsubMessage.messageId}")}
+                Mono.fromCallable { objectMapper.readValue( msg.pubsubMessage.data.toStringUtf8(), String::class.java) }
+                    .flatMap {
+                        log.info("Incoming Payload $it, messageId ${pubsubMessage.messageId}")
+                        Mono.just(it)
+                    }
                     .then(Mono.fromFuture {
+                        log.info("Message ack on messageId ${pubsubMessage.messageId}")
                         log.info("Message ack on messageId ${pubsubMessage.messageId}")
                         msg.ack().completable()
                     })
