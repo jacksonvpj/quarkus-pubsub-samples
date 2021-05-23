@@ -37,7 +37,6 @@ class PubSubReceiver(
                     }
                     .then(Mono.fromFuture {
                         log.info("Message ack on messageId ${pubsubMessage.messageId}")
-                        log.info("Message ack on messageId ${pubsubMessage.messageId}")
                         msg.ack().completable()
                     })
                     .onErrorResume{ e ->
