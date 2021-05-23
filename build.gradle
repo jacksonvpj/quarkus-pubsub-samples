@@ -1,0 +1,45 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version "1.4.32"
+    id "org.jetbrains.kotlin.plugin.allopen" version "1.4.32"
+    id 'io.quarkus'
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
+    implementation 'io.quarkiverse.googlecloudservices:quarkus-google-cloud-pubsub'
+    implementation 'io.quarkus:quarkus-kotlin'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+    implementation 'io.quarkus:quarkus-arc'
+    testImplementation 'io.quarkus:quarkus-junit5'
+
+    implementation 'org.springframework.cloud:spring-cloud-gcp-pubsub:1.2.6.RELEASE'
+    implementation 'io.smallrye.reactive:mutiny-reactor:0.17.0'
+}
+
+group 'com.example'
+version '1.0-SNAPSHOT'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+allOpen {
+    annotation("javax.ws.rs.Path")
+    annotation("javax.enterprise.context.ApplicationScoped")
+    annotation("io.quarkus.test.junit.QuarkusTest")
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = JavaVersion.VERSION_11
+    kotlinOptions.javaParameters = true
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = JavaVersion.VERSION_11
+}
